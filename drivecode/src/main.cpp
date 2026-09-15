@@ -8,8 +8,10 @@
  */
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
-pros::MotorGroup left_mg({-1, -2, -3}, pros::MotorGearset::blue);
-pros::MotorGroup right_mg({4, 5, 6}, pros::MotorGearset::blue);
+
+//Front to back ports
+pros::MotorGroup left_mg({-10, -6, -9}, pros::MotorGearset::blue);
+pros::MotorGroup right_mg({3, 1, 2}, pros::MotorGearset::blue);
 
 void on_center_button() {
 	static bool pressed = false;
@@ -89,6 +91,7 @@ void opcontrol() {
 		if (fabs(leftSpeed) > 10)
 		{
 			left_mg.move(leftSpeed);
+
 		}	
 		else    
 		{
@@ -97,11 +100,11 @@ void opcontrol() {
 		
 		if (fabs(rightSpeed) > 10)
 		{
-			right_mg.move(rightSpeed); 
+			right_mg.move(rightSpeed);
 		}
 		else
 		{
-			right_mg.move_velocity(0); 
+			right_mg.move_velocity(0);
 		}
 		pros::delay(20);                               // Run for 20 ms then update
 	}

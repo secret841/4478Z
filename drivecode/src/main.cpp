@@ -1,6 +1,7 @@
 #include "main.h"
 #include "functions.h"
 #include "motors.h"
+#include "lemlib/api.hpp"
 
 /**
  * A callback function for LLEMU's center button.
@@ -29,7 +30,7 @@ void on_center_button() {
  */
 void initialize() {
 	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
+	pros::lcd::set_text(1, "Hello, World!");
 	pros::lcd::register_btn1_cb(on_center_button);
 
 	//Sets everything to zero in case I messed up
@@ -75,7 +76,10 @@ void competition_initialize() {}
 void autonomous() {
 	//drivePID(distance, velocity, waitTime)
 	//REMEMBER THAT ONE VEX TILE IS 24 INCHES! 
-	turnPID(90, 1, 7000);  
+	turnPID(90, 1, 15000); 
+	turnPID(30, 1, 15000);  
+	drivePID(5, 1, 1000); 
+	turnPID(0, 1, 1000);
 	//driveAmount(-15, 100);
 	//driveAmount(-150, 30);
 }

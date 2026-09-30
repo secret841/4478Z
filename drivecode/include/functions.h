@@ -1,6 +1,7 @@
 #include "main.h"
 #include "motors.h"
-#include "api.h" 
+#include "api.h"
+#include "lemlib/api.hpp"
 
 #pragma once
 const float wheel_radius = 3.25; 
@@ -119,14 +120,17 @@ void drivePID(double desired_inches, double velocit, int waitTime)
     return; 
 }
 
-double tKP = 0.75, tKI = 0, tKD = 0; 
+double tKP = 0.97, tKI = 0, tKD = 0.25; 
+double min_turn_power = 14; 
 void turnPID(double desiredAngle, double velocit, int waitTime)
 {
     double derivative = 0; 
+    
     double integral = 0; 
     double power = 0; 
     int currWait = 0; 
-    double currAngle = inertial.get_rotation(); 
+    double currAngle = inertial.get_rotation();
+    double prevAngle = inertial.get_rotation();
 
     //Bounds currentAngle at [0, 360]
     while (currAngle > 360)
@@ -145,21 +149,22 @@ void turnPID(double desiredAngle, double velocit, int waitTime)
         pros::lcd::print(3, "power: %f", power); 
         currAngle = inertial.get_rotation(); 
         error = desiredAngle - currAngle;
+        derivative = currAngle - prevAngle; 
 
         power = ((tKP * error) + (tKI * integral) + (tKD * derivative)) * velocit; 
 
-        if (power > 0)
+        if (fabs(power) < min_turn_power)
         {
-            left_mg.move(power); 
-            right_mg.move(-power); 
+            power > 0 ? power = min_turn_power : power = -min_turn_power; 
         }
-        else
-        {
-            left_mg.move(-power); 
-            right_mg.move(power); 
-        }
+
+        left_mg.move(power); 
+        right_mg.move(-power); 
+   
+        prevAngle = currAngle;
         currWait += 20;
         pros::delay(20); 
+
     }
 
     left_mg.move_velocity(0);
@@ -167,4 +172,6 @@ void turnPID(double desiredAngle, double velocit, int waitTime)
 
     left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE); 
     right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE); 
+
+    return; 
 }

@@ -37,6 +37,9 @@ void initialize() {
 	left_mg.tare_position(); 
 	right_mg.tare_position(); 
 
+	cascade1.tare_position();
+	cascade2.tare_position(); 
+
 	inertial.reset(); 
 	while (inertial.is_calibrating())
 	{
@@ -107,17 +110,72 @@ void opcontrol() {
 		//Gets speed from left and right joysticks
 		int leftSpeed = master.get_analog(ANALOG_LEFT_Y);  
 		int rightSpeed = master.get_analog(ANALOG_RIGHT_Y);
+		double cascade_pos = (cascade1.get_position() + cascade2.get_position()) / 2; 
 
 		pros::lcd::print(0, "%d", rightSpeed);
+		//pros::lcd::print(1, "%d", cascade_pos); 
 
+	//Faster Acceleration Setting
+	if (cascade_pos > 100)
+	{
+		//We are using x^3/127^2
+		leftLog = (leftSpeed * leftSpeed * leftSpeed) / 16129;
+		 rightLog = (rightSpeed * rightSpeed * rightSpeed) / 16129;
+
+		if (fabs(leftSpeed) > 110)
+		{
+			leftSpeed < 0 ? leftSpeed = -110 : leftSpeed = 110; 
+		}
+		if (fabs(rightSpeed) > 110)
+		{
+			rightSpeed < 0 ? rightSpeed = -110 : rightSpeed = 110;
+		}
+
+		if (fabs(leftLog) > 1)
+		{
+			left_mg.move(leftLog);
+		}
+		else if (fabs(leftLog) < 1 && fabs(rightLog) > 1) // Otherwise we would brake at the same time.
+		{
+			left_mg.move_velocity(0);
+			left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+		}
+		else
+		{
+			left_mg.move_velocity(0);
+			right_mg.move_velocity(0);
+			left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+			right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+		}
+
+		if (fabs(rightLog) > 1)
+		{
+			right_mg.move(rightLog);
+		}
+
+		else if (fabs(rightLog) < 1 && fabs(leftLog) > 1)
+		{
+			right_mg.move_velocity(0);
+			right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+		}
+		else
+		{
+			left_mg.move_velocity(0);
+			right_mg.move_velocity(0);
+			left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+			right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+		}
+	}
+	else
+	{
 		leftSpeed < 0 ? leftLog = (leftSpeed * leftSpeed) / -127 : leftLog = (leftSpeed * leftSpeed) / 127;
 		rightSpeed < 0 ? rightLog = (rightSpeed * rightSpeed) / -127 : rightLog = (rightSpeed * rightSpeed) / 127;
 
 		if (fabs(leftLog) > 1)
 		{
 			left_mg.move(leftLog);
-		}	
-		else if (fabs(leftLog) < 1 && fabs(rightLog) > 1) //Otherwise we would brake at the same time. 
+		}
+		else if (fabs(leftLog) < 1 && fabs(rightLog) > 1) // Otherwise we would brake at the same time.
 		{
 			left_mg.move_velocity(0);
 			left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
@@ -125,7 +183,7 @@ void opcontrol() {
 		else
 		{
 			left_mg.move_velocity(0);
-			right_mg.move_velocity(0); 
+			right_mg.move_velocity(0);
 			left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 			right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 		}
@@ -134,10 +192,10 @@ void opcontrol() {
 		{
 			right_mg.move(rightLog);
 		}
-		
+
 		else if (fabs(rightLog) < 1 && fabs(leftLog) > 1)
 		{
-			right_mg.move_velocity(0); 
+			right_mg.move_velocity(0);
 			right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 		}
 		else
@@ -147,7 +205,26 @@ void opcontrol() {
 			left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 			right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 		}
+	}
 		
+		
+		if (master.get_digital(DIGITAL_R1))
+		{
+			cascade1.move_velocity(600);
+			cascade2.move_velocity(600);
+		}
+		else if (master.get_digital(DIGITAL_R2) && cascade_pos > 0)
+		{
+			cascade1.move_velocity(-600);
+			cascade2.move_velocity(-600);
+		}
+		else
+		{
+			cascade1.move_velocity(0);
+			cascade2.move_velocity(0);
+			cascade1.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+			cascade2.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+		}
 		pros::delay(20);                               // Run for 20 ms then update to prevent CPU Death
 	}
 }

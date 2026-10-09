@@ -176,7 +176,7 @@ void turnPID(double desiredAngle, double velocit, int waitTime)
     return; 
 }
 
-/*void moveCascade(double desired_inches, double velocit, int waitTime)
+void moveCascade(double desired_inches, double velocit, int waitTime)
 {
     int currTime = 0;
     double slew = 5;
@@ -185,7 +185,7 @@ void turnPID(double desiredAngle, double velocit, int waitTime)
     double derivative = 0;
 
     double desired_degrees = inchesToDegrees(desired_inches, aryans_constant);
-    double curr_pos = cascade.get_position(); 
+    double curr_pos = (cascade1.get_position() + cascade2.get_position()) /2.0; 
     double prev_pos = curr_pos;
 
     double desired_position = curr_pos + desired_degrees;
@@ -195,7 +195,7 @@ void turnPID(double desiredAngle, double velocit, int waitTime)
     pros::lcd::print(3, "Degrees: %f", desired_degrees);
     while (fabs(error) > 1 && currTime < waitTime)
     {
-        curr_pos = cascade.get_position();
+        curr_pos = (cascade1.get_position() + cascade2.get_position());
         pros::lcd::print(6, "Derivative : %f", derivative);
         pros::lcd::print(4, "Error: %f", error);
         pros::lcd::print(5, "Power: %f", power);
@@ -225,7 +225,8 @@ void turnPID(double desiredAngle, double velocit, int waitTime)
         {
             power > 0 ? power = min_power : power = -min_power;
         }
-        cascade.move(power);
+        cascade1.move(power);
+        cascade2.move(power); 
 
         prev_pos = curr_pos;
         currTime += 20;
@@ -233,9 +234,14 @@ void turnPID(double desiredAngle, double velocit, int waitTime)
 
         pros::delay(20);
     }
-    cascade.move_velocity(0);
-    cascade.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+
+    cascade1.move_velocity(0); 
+    cascade2.move_velocity(0); 
+
+    cascade1.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    cascade2.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  
 
     return;
 }
-    */
+    

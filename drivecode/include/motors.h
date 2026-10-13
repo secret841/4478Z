@@ -12,6 +12,12 @@ pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::MotorGroup right_mg({2, -3, 7}, pros::MotorGearset::blue);
 pros::MotorGroup left_mg({9, -10, -20}, pros::MotorGearset::blue);
 
+
+pros::MotorGroup cascade_left({4, 5}, pros::MotorGearset::blue);
+pros::MotorGroup cascade_right({-6, -8}, pros::MotorGearset::blue); 
+
+pros::ADIDigitalOut clamp_piston('A'); 
+
 pros::Motor cascade1(4, pros::MotorGearset::blue); 
 pros::Motor cascade2(-5, pros::MotorGearset::blue); 
   

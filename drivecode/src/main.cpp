@@ -104,7 +104,7 @@ void opcontrol() {
 
 	while (true) {
 
-
+		bool piston_val = true; 
 		int leftLog = 0;
 		int rightLog = 0;
 		//Gets speed from left and right joysticks
@@ -224,6 +224,12 @@ void opcontrol() {
 			cascade2.move_velocity(0);
 			cascade1.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 			cascade2.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+		}
+
+		if (master.get_digital_new_press(DIGITAL_A))
+		{
+			clamp_piston.set_value(piston_val); 
+			piston_val = !piston_val; 
 		}
 		pros::delay(20);                               // Run for 20 ms then update to prevent CPU Death
 	}

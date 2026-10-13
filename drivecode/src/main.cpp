@@ -37,8 +37,8 @@ void initialize() {
 	left_mg.tare_position(); 
 	right_mg.tare_position(); 
 
-	cascade1.tare_position();
-	cascade2.tare_position(); 
+	cascade_left.tare_position();
+	cascade_right.tare_position(); 
 
 	inertial.reset(); 
 	while (inertial.is_calibrating())
@@ -110,7 +110,7 @@ void opcontrol() {
 		//Gets speed from left and right joysticks
 		int leftSpeed = master.get_analog(ANALOG_LEFT_Y);  
 		int rightSpeed = master.get_analog(ANALOG_RIGHT_Y);
-		double cascade_pos = (cascade1.get_position() + cascade2.get_position()) / 2; 
+		double cascade_pos = (cascade_left.get_position() + cascade_right.get_position()) / 2; 
 
 		pros::lcd::print(0, "%d", rightSpeed);
 		//pros::lcd::print(1, "%d", cascade_pos); 
@@ -210,20 +210,20 @@ void opcontrol() {
 		
 		if (master.get_digital(DIGITAL_R1))
 		{
-			cascade1.move_velocity(600);
-			cascade2.move_velocity(600);
+			cascade_left.move_velocity(600);
+			cascade_right.move_velocity(600);
 		}
 		else if (master.get_digital(DIGITAL_R2) && cascade_pos > 0)
 		{
-			cascade1.move_velocity(-600);
-			cascade2.move_velocity(-600);
+			cascade_left.move_velocity(-600);
+			cascade_right.move_velocity(-600);
 		}
 		else
 		{
-			cascade1.move_velocity(0);
-			cascade2.move_velocity(0);
-			cascade1.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-			cascade2.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+			cascade_left.move_velocity(0);
+			cascade_right.move_velocity(0);
+			cascade_left.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+			cascade_right.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 		}
 
 		if (master.get_digital_new_press(DIGITAL_A))

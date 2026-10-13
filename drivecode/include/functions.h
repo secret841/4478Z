@@ -185,7 +185,7 @@ void moveCascade(double desired_inches, double velocit, int waitTime)
     double derivative = 0;
 
     double desired_degrees = inchesToDegrees(desired_inches, aryans_constant);
-    double curr_pos = (cascade1.get_position() + cascade2.get_position()) /2.0; 
+    double curr_pos = (cascade_left.get_position() + cascade_right.get_position()) /2.0; 
     double prev_pos = curr_pos;
 
     double desired_position = curr_pos + desired_degrees;
@@ -195,7 +195,7 @@ void moveCascade(double desired_inches, double velocit, int waitTime)
     pros::lcd::print(3, "Degrees: %f", desired_degrees);
     while (fabs(error) > 1 && currTime < waitTime)
     {
-        curr_pos = (cascade1.get_position() + cascade2.get_position());
+        curr_pos = (cascade_left.get_position() + cascade_right.get_position());
         pros::lcd::print(6, "Derivative : %f", derivative);
         pros::lcd::print(4, "Error: %f", error);
         pros::lcd::print(5, "Power: %f", power);
@@ -225,8 +225,8 @@ void moveCascade(double desired_inches, double velocit, int waitTime)
         {
             power > 0 ? power = min_power : power = -min_power;
         }
-        cascade1.move(power);
-        cascade2.move(power); 
+        cascade_left.move(power);
+        cascade_right.move(power); 
 
         prev_pos = curr_pos;
         currTime += 20;
@@ -235,11 +235,11 @@ void moveCascade(double desired_inches, double velocit, int waitTime)
         pros::delay(20);
     }
 
-    cascade1.move_velocity(0); 
-    cascade2.move_velocity(0); 
+    cascade_left.move_velocity(0); 
+    cascade_right.move_velocity(0); 
 
-    cascade1.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-    cascade2.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    cascade_left.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    cascade_right.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   
 
     return;

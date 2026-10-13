@@ -9,12 +9,12 @@ pros::Controller master(pros::E_CONTROLLER_MASTER);
 // Front to back ports
 
 //It was 2, -3, 7 before
-pros::MotorGroup right_mg({2, -3, 7}, pros::MotorGearset::blue);
-pros::MotorGroup left_mg({9, -10, -20}, pros::MotorGearset::blue);
+pros::MotorGroup right_mg({4, -6}, pros::MotorGearset::blue);
+pros::MotorGroup left_mg({1, -3}, pros::MotorGearset::blue);
 
 
-pros::MotorGroup cascade_left({4, 5}, pros::MotorGearset::blue);
-pros::MotorGroup cascade_right({-6, -8}, pros::MotorGearset::blue); 
+pros::MotorGroup cascade_left({12, 16}, pros::MotorGearset::blue);
+pros::MotorGroup cascade_right({-7, -8}, pros::MotorGearset::blue); 
 
 pros::ADIDigitalOut clamp_piston('A'); 
 

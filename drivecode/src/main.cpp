@@ -12,13 +12,24 @@
 
 
 
+ int auton = 3; 
 void on_center_button() {
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
-	} else {
-		pros::lcd::clear_line(2);
+	auton++; 
+	if (auton == 1)
+	{
+		pros::lcd::print(1, "Turn Left First, 2 PIN");
+	}
+	else if (auton == 2)
+	{
+		pros::lcd::print(1, "Turn Right First, 2 PIN"); 
+	}
+	else if (auton == 3)
+	{
+		pros::lcd::print(1, "Skills Auto"); 
+	}
+	else
+	{
+		auton = 0; 
 	}
 }
 
@@ -78,11 +89,121 @@ void competition_initialize() {}
  */
 void autonomous() {
 	//drivePID(distance, velocity, waitTime)
-	//REMEMBER THAT ONE VEX TILE IS 24 INCHES! 
-	turnPID(90, 1, 15000); 
-	turnPID(30, 1, 15000);  
-	drivePID(5, 1, 1000); 
-	turnPID(0, 1, 1000);
+	//REMEMBER THAT ONE VEX TILE IS 24 INCHES!  
+	//True makes it clamp. 
+	
+	//Turn Left First
+	if (auton == 1)
+	{
+		clamp_piston.set_value(true);
+		drivePID(1, 1, 200);
+		pros::delay(200);
+
+		cascade_left.move_relative(250, 600);
+		cascade_right.move_relative(250, 600);
+		drivePID(-11, 1, 1000);
+		drivePID(5.5, 1, 300);
+		drivePID(-11, 1, 1000);
+		drivePID(17, 1, 1000);
+
+		// Turns to first goal
+
+		turnPID(-90, 1, 1000);
+
+		cascade_left.move_relative(550, 600);
+		cascade_right.move_relative(550, 600);
+
+		pros::lcd::print(7, "This worked!");
+		drivePID(18, 1, 1000); // ERROR HERE!
+
+		cascade_left.move_relative(-650, 600);
+		cascade_right.move_relative(-650, 600);
+
+		pros::delay(200);
+		drivePID(-3, 1, 250); // Correction
+		pros::delay(200);
+		clamp_piston.set_value(false); // PLOP!
+
+		drivePID(-14.3, 1, 1000);
+		turnPID(-36.5, 1, 1500); // Turn to next pin
+
+		// 2nd number distslowdown
+		driveAndClampPID(30, 650, 200, 1, 2500);
+		cascade_left.move_relative(850, 600);
+		cascade_right.move_relative(850, 600);
+
+		drivePID(5, 1, 600);
+
+		turnPID(-185, 1, 1000);
+		drivePID(24, 0.85, 1500);
+
+		cascade_left.move_relative(-950, 600);
+		cascade_right.move_relative(-950, 600);
+
+		clamp_piston.set_value(false);
+		drivePID(-7, 1, 500);
+	}
+	//Turn Right First
+	else if (auton == 2)
+	{
+		//Test at comp
+	}
+	//Skills Auton
+	else if (auton == 3)
+	{
+		clamp_piston.set_value(true);
+		drivePID(1, 1, 200);
+		pros::delay(200);
+
+		cascade_left.move_relative(250, 600);
+		cascade_right.move_relative(250, 600);
+		drivePID(-11, 1, 1000);
+		drivePID(5.5, 1, 300);
+		drivePID(-11, 1, 1000);
+		drivePID(17, 1, 1000);
+
+		// Turns to first goal
+
+		turnPID(-90, 1, 1000);
+
+		cascade_left.move_relative(550, 600);
+		cascade_right.move_relative(550, 600);
+
+		pros::lcd::print(7, "This worked!");
+		drivePID(18, 1, 1000); // ERROR HERE!
+
+		cascade_left.move_relative(-650, 600);
+		cascade_right.move_relative(-650, 600);
+
+		pros::delay(200);
+		drivePID(-3, 1, 250); // Correction
+		pros::delay(200);
+		clamp_piston.set_value(false); // PLOP!
+
+		drivePID(-14.3, 1, 1000);
+		turnPID(-36.5, 1, 1500); // Turn to next pin
+
+		// 2nd number distslowdown
+		driveAndClampPID(30, 650, 200, 1, 2500);
+		cascade_left.move_relative(850, 600);
+		cascade_right.move_relative(850, 600);
+
+		drivePID(5, 1, 600);
+
+		turnPID(-185, 1, 1000);
+		drivePID(24, 0.85, 1500);
+
+		cascade_left.move_relative(-950, 600);
+		cascade_right.move_relative(-950, 600);
+
+		clamp_piston.set_value(false);
+		drivePID(-12, 1, 1200);
+		turnPID(45, 1, 1000); 
+		drivePID(27, 1, 1800); 
+	}
+	
+	//Clamp_error set in degrees
+	//driveAndClampPID(10, 30, 1, 1000); 
 	//driveAmount(-15, 100);
 	//driveAmount(-150, 30);
 }
@@ -101,10 +222,10 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-
+	bool piston_val = true;
 	while (true) {
 
-		bool piston_val = true; 
+	
 		int leftLog = 0;
 		int rightLog = 0;
 		//Gets speed from left and right joysticks
@@ -112,7 +233,9 @@ void opcontrol() {
 		int rightSpeed = master.get_analog(ANALOG_RIGHT_Y);
 		double cascade_pos = (cascade_left.get_position() + cascade_right.get_position()) / 2; 
 
-		pros::lcd::print(0, "%d", rightSpeed);
+		//pros::lcd::print(0, "%d", rightSpeed);
+		//pros::lcd::print(1, "%d", piston_val);
+		
 		//pros::lcd::print(1, "%d", cascade_pos); 
 
 	//Faster Acceleration Setting
@@ -218,6 +341,11 @@ void opcontrol() {
 			cascade_left.move_velocity(-600);
 			cascade_right.move_velocity(-600);
 		}
+		else if (master.get_digital(DIGITAL_DOWN))
+		{
+			cascade_left.move_velocity(-600);
+			cascade_right.move_velocity(-600);
+		}
 		else
 		{
 			cascade_left.move_velocity(0);
@@ -228,9 +356,18 @@ void opcontrol() {
 
 		if (master.get_digital_new_press(DIGITAL_A))
 		{
-			clamp_piston.set_value(piston_val); 
 			piston_val = !piston_val; 
 		}
+		if (piston_val)
+		{
+			clamp_piston.set_value(true);
+		}
+		else
+		{
+			clamp_piston.set_value(false); 
+		}
+
+		
 		pros::delay(20);                               // Run for 20 ms then update to prevent CPU Death
 	}
 }

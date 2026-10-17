@@ -19,7 +19,7 @@ double inchesToDegrees(double inches, double wheel_radius)
     return degrees;
 }
 
-void driveAmount(double inches, double velocit)
+void driveAmount(double inches, double velocit, int waitTime)
 {
     int degrees = inchesToDegrees(inches, aryans_constant); 
     pros::lcd::print(0, "%d", degrees);
@@ -31,11 +31,13 @@ void driveAmount(double inches, double velocit)
     double desired_position = left_mg.get_position() + degrees;
 
     double error = desired_position - left_mg.get_position();
-     while (fabs(error) > 2)
+    int currWait = 0; 
+     while (fabs(error) > 2 && currWait < waitTime)
     {
         pros::lcd::print(1, "%f", error); 
         current = left_mg.get_position();
         error = desired_position - current; 
+        currWait += 20; 
         pros::delay(20); 
     }
    
@@ -119,7 +121,7 @@ void drivePID(double desired_inches, double velocita, int waitTime)
     return; 
 }
 
-double min_clamp_power = 14; 
+double min_clamp_power = 8; 
 void driveAndClampPID(double desired_inches, double distSlowDown, double clamp_error, double velocit, int waitTime)
 {
     bool firstTime = true; 
@@ -192,6 +194,7 @@ void driveAndClampPID(double desired_inches, double distSlowDown, double clamp_e
 
         pros::delay(20);
     }
+    clamp_piston.set_value(true);
     left_mg.move_velocity(0);
     right_mg.move_velocity(0);
 

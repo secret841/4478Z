@@ -2,6 +2,9 @@
 #include "functions.h"
 #include "motors.h"
 #include "lemlib/api.hpp"
+#include "routes/vex/turnleft2pin.h"
+#include "routes/recf/2pinrollerright.h"
+#include "routes/recf/3pinright.h"
 
 /**
  * A callback function for LLEMU's center button.
@@ -12,16 +15,16 @@
 
 
 
- int auton = 1; 
+ int auton = 2; 
 void on_center_button() {
 	auton++; 
 	if (auton == 1)
 	{
-		pros::lcd::print(4, "Turn Left First, 2 PIN Selected");
+		pros::lcd::print(4, "2 Pin Roller Right Side Selected");
 	}
 	else if (auton == 2)
 	{
-		pros::lcd::print(4, "Turn Right First, 2 PIN Selected"); 
+		pros::lcd::print(4, "3 Pin Right Side Selected"); 
 	}
 	else if (auton == 3)
 	{
@@ -95,112 +98,12 @@ void autonomous() {
 	//Turn Left First
 	if (auton == 1)
 	{
-		clamp_piston.set_value(true);
-		drivePID(1, 1, 200);
-		pros::delay(200);
-
-		cascade_left.move_relative(250, 600);
-		cascade_right.move_relative(250, 600);
-		drivePID(8, 1, 500); 
-		driveAmount(-24, 470, 800);
-		drivePID(7.5, 1.3, 500);
-		driveAmount(-20, 470, 800);
-		drivePID(18.5, 1.2, 1000);
-		
-
-		// Turns to first goal
-
-		turnPID(-90, 1, 1000);
-
-		cascade_left.move_relative(550, 600);
-		cascade_right.move_relative(550, 600);
-
-		pros::lcd::print(7, "This worked!");
-		drivePID(18, 0.8, 1000); // ERROR HERE!
-
-		cascade_left.move_relative(-650, 600);
-		cascade_right.move_relative(-650, 600);
-
-		pros::delay(200);
-		drivePID(-3, 1, 250); // Correction
-		pros::delay(200);
-		clamp_piston.set_value(false); // PLOP!
-
-		drivePID(-14.3, 1, 1000);
-		cascade_left.move_relative(150, 600);
-		cascade_right.move_relative(150, 600);
-		turnPID(-36.5, 1, 1100); // Turn to next pin
-
-		// 2nd number distslowdown
-		driveAndClampPID(33.5, 650, 200, 0.75, 2500);
-		cascade_left.move_relative(850, 600);
-		cascade_right.move_relative(850, 600);
-
-		drivePID(5, 1, 400);
-
-		turnPID(-182, 1, 800);
-		drivePID(23, 0.75, 1500);
-
-		cascade_left.move_relative(-950, 600);
-		cascade_right.move_relative(-950, 600);
-
-		clamp_piston.set_value(false);
-		drivePID(-7, 1, 500);
+		twopinrollerright(); 
 	}
 	//Turn Right First
 	else if (auton == 2)
 	{
-		//Test at comp
-		clamp_piston.set_value(true);
-		drivePID(1, 1, 200);
-		pros::delay(200);
-
-		cascade_left.move_relative(250, 600);
-		cascade_right.move_relative(250, 600);
-		drivePID(8, 1, 500);
-		driveAmount(-24, 600, 1000);
-		drivePID(7.5, 1.3, 500);
-		driveAmount(-24, 600, 1000);
-		drivePID(18.5, 1, 1300);
-
-		// Turns to first goal
-
-		turnPID(90, 1, 1000);
-
-		cascade_left.move_relative(550, 600);
-		cascade_right.move_relative(550, 600);
-
-		pros::lcd::print(7, "This worked!");
-		drivePID(18, 0.8, 1000); // ERROR HERE!
-
-		cascade_left.move_relative(-650, 600);
-		cascade_right.move_relative(-650, 600);
-
-		pros::delay(200);
-		drivePID(-3, 1, 250); // Correction
-		pros::delay(200);
-		clamp_piston.set_value(false); // PLOP!
-
-		drivePID(-14.3, 1, 1000);
-		cascade_left.move_relative(150, 600);
-		cascade_right.move_relative(150, 600);
-		turnPID(36.5, 1, 1500); // Turn to next pin
-
-		// 2nd number distslowdown
-		driveAndClampPID(32, 650, 200, 0.85, 2500);
-		cascade_left.move_relative(850, 600);
-		cascade_right.move_relative(850, 600);
-
-		drivePID(5, 1, 600);
-
-		turnPID(182, 1, 1000);
-		drivePID(23, 0.75, 1500);
-
-		cascade_left.move_relative(-950, 600);
-		cascade_right.move_relative(-950, 600);
-
-		clamp_piston.set_value(false);
-		drivePID(-7, 1, 500);
+		threepinright(); 
 	}
 	//Skills Auton - MUST FLIP TO BE AUTON 2
 	else if (auton == 3)
@@ -312,11 +215,11 @@ void opcontrol() {
 			rightSpeed < 0 ? rightSpeed = -110 : rightSpeed = 110;
 		}
 
-		if (fabs(leftLog) > 1)
+		if (fabs(leftLog) > 0.5)
 		{
 			left_mg.move(leftLog);
 		}
-		else if (fabs(leftLog) < 1 && fabs(rightLog) > 1) // Otherwise we would brake at the same time.
+		else if (fabs(leftLog) < 0.5 && fabs(rightLog) > 0.5) // Otherwise we would brake at the same time.
 		{
 			left_mg.move_velocity(0);
 			left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
@@ -329,12 +232,12 @@ void opcontrol() {
 			right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 		}
 
-		if (fabs(rightLog) > 1)
+		if (fabs(rightLog) > 0.5)
 		{
 			right_mg.move(rightLog);
 		}
 
-		else if (fabs(rightLog) < 1 && fabs(leftLog) > 1)
+		else if (fabs(rightLog) < 0.5 && fabs(leftLog) > 0.5)
 		{
 			right_mg.move_velocity(0);
 			right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
@@ -352,11 +255,11 @@ void opcontrol() {
 		leftSpeed < 0 ? leftLog = (leftSpeed * leftSpeed) / -127 : leftLog = (leftSpeed * leftSpeed) / 127;
 		rightSpeed < 0 ? rightLog = (rightSpeed * rightSpeed) / -127 : rightLog = (rightSpeed * rightSpeed) / 127;
 
-		if (fabs(leftLog) > 1)
+		if (fabs(leftLog) > 0.5)
 		{
 			left_mg.move(leftLog);
 		}
-		else if (fabs(leftLog) < 1 && fabs(rightLog) > 1) // Otherwise we would brake at the same time.
+		else if (fabs(leftLog) < 0.5 && fabs(rightLog) > 0.5) // Otherwise we would brake at the same time.
 		{
 			left_mg.move_velocity(0);
 			left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
@@ -369,12 +272,12 @@ void opcontrol() {
 			right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 		}
 
-		if (fabs(rightLog) > 1)
+		if (fabs(rightLog) > 0.5)
 		{
 			right_mg.move(rightLog);
 		}
 
-		else if (fabs(rightLog) < 1 && fabs(leftLog) > 1)
+		else if (fabs(rightLog) < 0.5 && fabs(leftLog) > 0.5)
 		{
 			right_mg.move_velocity(0);
 			right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);

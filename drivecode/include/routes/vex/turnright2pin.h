@@ -1,3 +1,4 @@
+// Test at comp
 #include "main.h"
 #include "motors.h"
 #include "api.h"
@@ -5,24 +6,24 @@
 #include "lemlib/api.hpp"
 
 
-#pragma once
-
-void turnleft2pin()
+void turnRight2pin()
 {
+
     clamp_piston.set_value(true);
     drivePID(1, 1, 200);
     pros::delay(200);
 
     cascade_left.move_relative(250, 600);
     cascade_right.move_relative(250, 600);
-    drivePID(-11, 1, 1000);
-    drivePID(5.5, 1, 300);
-    drivePID(-11, 1, 1000);
-    drivePID(18, 1, 1000);
+    drivePID(8, 1, 500);
+    driveAmount(-24, 600, 1000);
+    drivePID(7.5, 1.3, 500);
+    driveAmount(-24, 600, 1000);
+    drivePID(18.5, 1, 1300);
 
     // Turns to first goal
 
-    turnPID(-90, 1, 1000);
+    turnPID(90, 1, 1000);
 
     cascade_left.move_relative(550, 600);
     cascade_right.move_relative(550, 600);
@@ -41,16 +42,16 @@ void turnleft2pin()
     drivePID(-14.3, 1, 1000);
     cascade_left.move_relative(150, 600);
     cascade_right.move_relative(150, 600);
-    turnPID(-36.5, 1, 1500); // Turn to next pin
+    turnPID(36.5, 1, 1500); // Turn to next pin
 
     // 2nd number distslowdown
-    driveAndClampPID(32, 650, 200, 0.75, 2500);
+    driveAndClampPID(32, 650, 200, 0.85, 2500);
     cascade_left.move_relative(850, 600);
     cascade_right.move_relative(850, 600);
 
     drivePID(5, 1, 600);
 
-    turnPID(-182, 1, 1000);
+    turnPID(182, 1, 1000);
     drivePID(23, 0.75, 1500);
 
     cascade_left.move_relative(-950, 600);

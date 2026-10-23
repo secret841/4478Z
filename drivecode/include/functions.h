@@ -284,7 +284,7 @@ void driveAndSlowPID(double desired_inches, double distSlowDown, double velocit,
 
     double error = desired_position - curr_pos;
 
-    pros::lcd::print(3, "Degrees: %f", desired_degrees);
+    //pros::lcd::print(3, "Degrees: %f", desired_degrees);
     while (fabs(error) > 1 && currTime < waitTime)
     {
         curr_pos = (left_mg.get_position() + right_mg.get_position()) / 2;

@@ -29,7 +29,7 @@ void twopinrollerright()
     drivePID(-2, 1, 300); 
     clamp_piston.set_value(false); //PLOP!
 
-    drivePID(-28.5, 1, 1000); //Back out of goal
+    drivePID(-29.25, 1, 1000); //Back out of goal
     turnPID(0, 1, 1000);
     
     driveAndClampPID(18, 100, 20, 1, 1000); //Clamp at match loader here

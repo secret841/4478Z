@@ -5,6 +5,7 @@
 #include "routes/vex/turnleft2pin.h"
 #include "routes/recf/2pinrollerright.h"
 #include "routes/recf/3pinright.h"
+#include "routes/recf/2pinrollerleft.h"
 
 /**
  * A callback function for LLEMU's center button.
@@ -15,7 +16,7 @@
 
 
 
- int auton = 1; 
+ int auton = 4; 
 void on_center_button() {
 	auton++; 
 	if (auton == 1)
@@ -28,7 +29,11 @@ void on_center_button() {
 	}
 	else if (auton == 3)
 	{
-		pros::lcd::print(4, "Skills Auto (TURN RIGHT FIRST) Selected"); 
+		pros::lcd::print(4, "Skills Auto (TURN RIGHT FIRST) Selected");
+	}
+	else if (auton == 4)
+	{
+		pros::lcd::print(4, "2 Pin Roller Left Side Selected");
 	}
 	else
 	{
@@ -108,59 +113,12 @@ void autonomous() {
 	//Skills Auton - MUST FLIP TO BE AUTON 2
 	else if (auton == 3)
 	{
-		clamp_piston.set_value(true);
-		drivePID(1, 1, 200);
-		pros::delay(200);
+		threepinright(); 
+	}
 
-		cascade_left.move_relative(250, 600);
-		cascade_right.move_relative(250, 600);
-		drivePID(8, 1, 500);
-		driveAmount(-24, 600, 1000);
-		drivePID(7.5, 1.3, 500);
-		driveAmount(-24, 600, 1000);
-		drivePID(18.5, 1, 1300);
-
-		// Turns to first goal
-
-		turnPID(90, 1, 1000);
-
-		cascade_left.move_relative(550, 600);
-		cascade_right.move_relative(550, 600);
-
-		pros::lcd::print(7, "This worked!");
-		drivePID(18, 1, 1000); // ERROR HERE!
-
-		cascade_left.move_relative(-650, 600);
-		cascade_right.move_relative(-650, 600);
-
-		pros::delay(200);
-		drivePID(-3, 1, 250); // Correction
-		pros::delay(200);
-		clamp_piston.set_value(false); // PLOP!
-
-		drivePID(-14.3, 1, 1000);
-		turnPID(36.5, 1, 1500); // Turn to next pin
-
-		// 2nd number distslowdown
-		driveAndClampPID(33.5, 850, 200, 0.75, 6500);
-		cascade_left.move_relative(850, 600);
-		cascade_right.move_relative(850, 600);
-
-		drivePID(5, 1, 600);
-
-		turnPID(182, 1, 1000);
-		drivePID(25, 0.85, 1500);
-
-		cascade_left.move_relative(-950, 600);
-		cascade_right.move_relative(-950, 600);
-
-		clamp_piston.set_value(false);
-		drivePID(-7, 1, 500);
-
-		clamp_piston.set_value(false);
-		drivePID(-12, 1, 1200);
-		turnPID(-45, 1, 1000); 
-		drivePID(27, 1, 1800); 
+	else if (auton == 4)
+	{
+		twopinrollerleft(); 
 	}
 	
 	//Clamp_error set in degrees
@@ -168,6 +126,7 @@ void autonomous() {
 	//driveAmount(-15, 100);
 	//driveAmount(-150, 30);
 }
+
 
 /**
  * Runs the operator control code. This function will be started in its own task

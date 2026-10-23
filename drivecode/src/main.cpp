@@ -15,7 +15,7 @@
 
 
 
- int auton = 2; 
+ int auton = 1; 
 void on_center_button() {
 	auton++; 
 	if (auton == 1)

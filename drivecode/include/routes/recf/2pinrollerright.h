@@ -13,8 +13,8 @@ void twopinrollerright()
     clamp_piston.set_value(true);
     pros::delay(100); 
 
-    cascade_left.move_relative(450, 600);
-    cascade_right.move_relative(450, 600);
+    cascade_left.move_relative(550, 600);
+    cascade_right.move_relative(550, 600);
 
     
     drivePID(-22, 1, 900); //Back up, clear two pins

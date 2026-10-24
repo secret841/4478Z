@@ -6,6 +6,7 @@
 #include "routes/recf/2pinrollerright.h"
 #include "routes/recf/3pinright.h"
 #include "routes/recf/2pinrollerleft.h"
+#include "routes/recf/3pinleftside.h"
 
 /**
  * A callback function for LLEMU's center button.
@@ -16,7 +17,7 @@
 
 
 
- int auton = 4; 
+ int auton = 5; 
 void on_center_button() {
 	auton++; 
 	if (auton == 1)
@@ -34,6 +35,10 @@ void on_center_button() {
 	else if (auton == 4)
 	{
 		pros::lcd::print(4, "2 Pin Roller Left Side Selected");
+	}
+	else if (auton == 5)
+	{
+		pros::lcd::print(4, "3 Pin Left Side Selected"); 
 	}
 	else
 	{
@@ -119,6 +124,10 @@ void autonomous() {
 	else if (auton == 4)
 	{
 		twopinrollerleft(); 
+	}
+	else if (auton == 5)
+	{
+		threepinleft(); 
 	}
 	
 	//Clamp_error set in degrees
@@ -256,7 +265,7 @@ void opcontrol() {
 			cascade_left.move_velocity(600);
 			cascade_right.move_velocity(600);
 		}
-		else if (master.get_digital(DIGITAL_R2) && cascade_pos > 0)
+		else if (master.get_digital(DIGITAL_R2) && cascade_pos > -20)
 		{
 			cascade_left.move_velocity(-600);
 			cascade_right.move_velocity(-600);

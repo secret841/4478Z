@@ -12,8 +12,8 @@ void threepinright()
     clamp_piston.set_value(true);
     pros::delay(100);
 
-    cascade_left.move_relative(450, 600);
-    cascade_right.move_relative(450, 600);
+    cascade_left.move_relative(650, 600);
+    cascade_right.move_relative(650, 600);
 
     drivePID(-22, 1, 800); // Back up, clear two pins
     drivePID(7.3, 1, 450);   // Get back in position
@@ -21,8 +21,8 @@ void threepinright()
     turnPID(90, 1, 900); // Turn towards goal
     driveAndSlowPID(22.5, 250, 1, 900);
 
-    cascade_left.move_relative(-350, 600);
-    cascade_right.move_relative(-350, 600);
+    cascade_left.move_relative(-550, 600);
+    cascade_right.move_relative(-550, 600);
 
     drivePID(-2, 1, 100);
     clamp_piston.set_value(false); // PLOP!
@@ -31,8 +31,8 @@ void threepinright()
     turnPID(0, 1.2, 900);
 
     driveAndClampPID(18, 100, 20, 1, 950); // Clamp at match loader here
-    cascade_left.move_relative(120, 600);   // Lift up cascade slightly
-    cascade_right.move_relative(120, 600);
+    cascade_left.move_relative(220, 600);   // Lift up cascade slightly
+    cascade_right.move_relative(220, 600);
 
     drivePID(-15, 1, 1000); // Back out of matchloader
 
@@ -40,7 +40,7 @@ void threepinright()
     cascade_right.move_relative(700, 600);
 
     turnPID(90, 1, 1000);
-    driveAndSlowPID(31, 250, 1, 1000);
+    driveAndSlowPID(31, 350, 1, 1100);
 
     cascade_left.move_relative(-550, 600);
     cascade_right.move_relative(-550, 600);
@@ -55,21 +55,21 @@ void threepinright()
     cascade_right.move_relative(-300, 600);
     turnPID(1, 1, 1000);
 
-    driveAndClampPID(22, 100, 20, 1, 900); // Clamp at match loader here
+    driveAndClampPID(24, 100, 20, 1, 900); // Clamp at match loader here
     cascade_left.move_relative(120, 600);   // Lift up cascade slightly
     cascade_right.move_relative(120, 600);
 
     drivePID(-15.8, 1, 800); // Back out of matchloader
 
-    cascade_left.move_relative(1650, 600); // Lift up cascade slightly
-    cascade_right.move_relative(1650, 600);
+    cascade_left.move_relative(1450, 600); // Lift up cascade slightly
+    cascade_right.move_relative(1450, 600);
     turnPID(90, 1, 800); //Turn towards goal again
     
-    driveAndSlowPID(32, 250, 1, 800);
+    driveAndSlowPID(32.5, 450, 1.25, 800);
 
 
-    cascade_left.move_relative(-750, 520);
-    cascade_right.move_relative(-750, 520);
+    cascade_left.move_relative(-950, 520);
+    cascade_right.move_relative(-950, 520);
 
     drivePID(-2, 1, 200);
 

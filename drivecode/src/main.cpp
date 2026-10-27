@@ -17,7 +17,7 @@
 
 
 
- int auton = 5; 
+ int auton = 2; 
 void on_center_button() {
 	auton++; 
 	if (auton == 1)
@@ -69,6 +69,7 @@ void initialize() {
 	{
 		pros::delay(20);
 	}
+	inertial.set_rotation(0); 
 }
 
 /**
@@ -265,7 +266,7 @@ void opcontrol() {
 			cascade_left.move_velocity(600);
 			cascade_right.move_velocity(600);
 		}
-		else if (master.get_digital(DIGITAL_R2) && cascade_pos > -20)
+		else if (master.get_digital(DIGITAL_R2) && cascade_pos > -150)
 		{
 			cascade_left.move_velocity(-600);
 			cascade_right.move_velocity(-600);

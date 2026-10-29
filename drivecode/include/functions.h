@@ -345,7 +345,7 @@ void driveAndSlowPID(double desired_inches, double distSlowDown, double velocit,
 
 double tKP = 0.97, tKI = 0, tKD = 0.25; 
 double min_turn_power = 14; 
-void turnPID(double desiredAngle, double velocit, int waitTime)
+int turnPID(double desiredAngle, double velocit, int waitTime)
 {
     double derivative = 0; 
     
@@ -356,27 +356,43 @@ void turnPID(double desiredAngle, double velocit, int waitTime)
     double prevAngle = inertial.get_rotation();
 
     double error = desiredAngle - currAngle; 
+    double prevError = error; 
+
+    double firstError = desiredAngle - currAngle; 
+
+    double random = 90; 
 
     while (fabs(error) > 0.1 && currWait <= waitTime)
     {
         //pros::lcd::print(6, "currWait: %i", currWait);
         currAngle = inertial.get_rotation(); 
         error = desiredAngle - currAngle;
+
+        //Readjusts error
+        while (error > 180)
+        {
+            error -= 360; 
+        }
+
+        while (error < -180)
+        {
+            error += 360; 
+        }
         derivative = currAngle - prevAngle; 
 
         power = ((tKP * error) + (tKI * integral) + (tKD * derivative)) * velocit; 
 
-        if (fabs(power) < min_turn_power)
+        /*if (fabs(power) < min_turn_power)
         {
             power > 0 ? power = min_turn_power : power = -min_turn_power; 
-        }
+        }*/
 
         left_mg.move(power); 
         right_mg.move(-power); 
         
         if (currWait > waitTime)
         {
-            return; 
+            return random; 
         }
         prevAngle = currAngle;
         currWait += 20;
@@ -390,7 +406,7 @@ void turnPID(double desiredAngle, double velocit, int waitTime)
     left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE); 
     right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE); 
 
-    return; 
+    return random; 
 }
 
 void moveCascade(double desired_inches, double velocit, int waitTime)

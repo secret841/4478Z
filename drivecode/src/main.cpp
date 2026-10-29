@@ -7,6 +7,7 @@
 #include "routes/recf/3pinright.h"
 #include "routes/recf/2pinrollerleft.h"
 #include "routes/recf/3pinleftside.h"
+#include "routes/recf/skills.h"
 
 /**
  * A callback function for LLEMU's center button.
@@ -17,7 +18,7 @@
 
 
 
- int auton = 2; 
+ int auton = 3; 
 void on_center_button() {
 	auton++; 
 	if (auton == 1)
@@ -119,7 +120,7 @@ void autonomous() {
 	//Skills Auton - MUST FLIP TO BE AUTON 2
 	else if (auton == 3)
 	{
-		threepinright(); 
+		skills();
 	}
 
 	else if (auton == 4)

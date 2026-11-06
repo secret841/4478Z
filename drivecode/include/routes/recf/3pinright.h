@@ -8,6 +8,8 @@
 
 void threepinright()
 {
+    //chassis.setPose(0, 0, 0); 
+
     // Comment out all instances of clamping for now
     clamp_piston.set_value(true);
     pros::delay(100);
@@ -15,9 +17,10 @@ void threepinright()
     cascade_left.move_relative(850, 600);
     cascade_right.move_relative(850, 600);
 
-    drivePID(-22, 1.5, 750); // Back up, clear two pins
+    drivePID(-22, 1.2, 750); // Back up, clear two pins
     drivePID(7.3, 1, 450);   // Get back in position
 
+    //chassis.turnToHeading(90, 1000); //
     turnPID(90, 1, 1000); // Turn towards goal
     driveAndSlowPID(22.5, 250, 1, 900);
 
@@ -26,12 +29,12 @@ void threepinright()
 
     drivePID(-2, 1, 200);
     clamp_piston.set_value(false); // PLOP!
- 
+
     drivePID(-27, 1, 1050); // Back out of goal
     turnPID(0, 1, 1000);
 
     driveAndClampPID(18, 100, 20, 1, 950); // Clamp at match loader here
-    cascade_left.move_relative(220, 600);   // Lift up cascade slightly
+    cascade_left.move_relative(220, 600);  // Lift up cascade slightly
     cascade_right.move_relative(220, 600);
 
     drivePID(-13.8, 1, 1000); // Back out of matchloader
@@ -53,20 +56,22 @@ void threepinright()
 
     cascade_left.move_relative(-300, 600); // Put cascade down
     cascade_right.move_relative(-300, 600);
-    turnPID(0.5, 1, 950);
+    turnPID(-0.5, 0.9, 1000);
 
     driveAndClampPID(23.5, 100, 20, 1, 900); // Clamp at match loader here
-    cascade_left.move_relative(120, 600);   // Lift up cascade slightly
+
+   
+    cascade_left.move_relative(120, 600);    // Lift up cascade slightly
     cascade_right.move_relative(120, 600);
 
     drivePID(-14, 1, 700); // Back out of matchloader
 
     cascade_left.move_relative(1500, 600); // Lift up cascade slightly
     cascade_right.move_relative(1500, 600);
-    turnPID(90, 1, 850); //Turn towards goal again
-    
-    driveAndSlowPID(32, 450, 1.3, 1050);
+    turnPID(90, 1, 950); // Turn towards goal again
 
+    //pros::delay(28000);
+    driveAndSlowPID(32, 450, 1.3, 1050);
 
     cascade_left.move_relative(-950, 520);
     cascade_right.move_relative(-950, 520);
@@ -75,7 +80,7 @@ void threepinright()
 
     clamp_piston.set_value(false); // PLOP
 
-    pros::delay(300); 
+    pros::delay(300);
 
-    drivePID(-8, 0.8, 500); 
+    drivePID(-8, 0.8, 500);
 }

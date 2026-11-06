@@ -8,6 +8,8 @@
 
 void threepinleft()
 {
+
+    
      // Comment out all instances of clamping for now
     clamp_piston.set_value(true);
     pros::delay(100);

@@ -15,84 +15,108 @@ void skills()
     cascade_left.move_relative(850, 600);
     cascade_right.move_relative(850, 600);
 
-    drivePID(-22, 1.5, 750); // Back up, clear two pins
-    drivePID(7.3, 1, 450);   // Get back in position
+    drivePID(-22, 1.2, 850); // Back up, clear two pins
+    drivePID(9.3, 1, 550);   // Get back in position
 
-    turnPID(90, 1, 1000); // Turn towards goal
-    driveAndSlowPID(22.5, 250, 1, 900);
+    pros::delay(100); 
+    // chassis.turnToHeading(90, 1000); //
+    turnPID(90, 1, 1100); // Turn towards goal
+    driveAndSlowPID(22.5, 250, 1, 1200);
 
     cascade_left.move_relative(-950, 600);
     cascade_right.move_relative(-950, 600);
 
-    drivePID(-2, 1, 200);
+    drivePID(4, 1, 200);
     clamp_piston.set_value(false); // PLOP!
 
-    drivePID(-27, 0.9, 1350); // Back out of goal
-    turnPID(0, 1, 1000);
+    drivePID(-27, 1, 1050); // Back out of goal
+    turnPID(0, 1, 1200);
 
-    inertial.set_rotation(0); //Resets IMU Data
-    driveAndClampPID(18, 100, 20, 1, 950); // Clamp at match loader here
-    
+    driveAndClampPID(18, 100, 20, 0.9, 950); // Clamp at match loader here
     cascade_left.move_relative(220, 600);  // Lift up cascade slightly
     cascade_right.move_relative(220, 600);
 
     drivePID(-13.8, 1, 1000); // Back out of matchloader
 
-    cascade_left.move_relative(950, 600);
-    cascade_right.move_relative(950, 600);
+    cascade_left.move_relative(850, 600);
+    cascade_right.move_relative(850, 600);
 
-    turnPID(90, 1, 1100);
+    turnPID(90, 1, 1200);
+    pros::delay(200); 
     driveAndSlowPID(31, 350, 1, 1000);
 
-    cascade_left.move_relative(-750, 600);
-    cascade_right.move_relative(-750, 600);
+    cascade_left.move_relative(-650, 600);
+    cascade_right.move_relative(-650, 600);
 
     drivePID(-2, 1, 300);
 
     clamp_piston.set_value(false); // PLOP
 
-    drivePID(-27, 0.9, 1250); // Back out of goal again
+    drivePID(-27, 1, 950); // Back out of goal again
 
     cascade_left.move_relative(-300, 600); // Put cascade down
     cascade_right.move_relative(-300, 600);
-    turnPID(0, 1, 1050);
+    turnPID(-0.5, 0.9, 1100);
 
-    driveAndClampPID(23.5, 100, 20, 1, 900); // Clamp at match loader here
-    inertial.set_rotation(0); //Resets imu
-    cascade_left.move_relative(180, 600);    // Lift up cascade slightly
-    cascade_right.move_relative(180, 600);
+    pros::delay(200); 
+    driveAndClampPID(23.5, 100, 20, 0.9, 900); // Clamp at match loader here
 
-    drivePID(-14, 1, 700); // Back out of matchloader
+    cascade_left.move_relative(120, 600); // Lift up cascade slightly
+    cascade_right.move_relative(120, 600);
+
+    drivePID(-15, 1, 800); // Back out of matchloader
 
     cascade_left.move_relative(1500, 600); // Lift up cascade slightly
     cascade_right.move_relative(1500, 600);
-    double hello = turnPID(90, 1, 2250); // Turn towards goal again
-     pros::lcd::print(5, "Error: %d", hello); 
+    turnPID(90, 1, 1050); // Turn towards goal again
 
-    driveAndSlowPID(32, 450, 1, 2050);
+    pros::delay(200);
+    driveAndSlowPID(32, 450, 0.95, 1250);
 
     cascade_left.move_relative(-950, 520);
     cascade_right.move_relative(-950, 520);
 
-    drivePID(11, 1, 550);
+    drivePID(8, 1, 450);
 
     clamp_piston.set_value(false); // PLOP
 
-    pros::delay(550);
+    pros::delay(300);
 
-    cascade_left.move_relative(-800, 520); 
-    cascade_right.move_relative(-800, 520);
+    drivePID(-5, 0.8, 500);
+    turnPID(90, 1, 500); 
 
-    drivePID(-27, 1, 1200); //Back out of goal again
-    turnPID(0, 1, 5500);
-    driveAndClampPID(23.5, 100, 20, 1, 900); // Clamp at match loader here
+    pros::delay(50); 
+    drivePID(-23, 1, 1000); //Back out of goal, goes for #4
+
+    cascade_left.move_relative(-1250, 520);
+    cascade_right.move_relative(-1250, 520);
+    turnPID(0, 1, 1500);
+
+    pros::delay(200); 
+    driveAndClampPID(23.5, 100, 20, 0.9, 900); // Clamp at match loader here
 
     cascade_left.move_relative(120, 600); // Lift up cascade slightly
     cascade_right.move_relative(120, 600);
 
     drivePID(-14, 1, 700); // Back out of matchloader
+    turnPID(90, 1, 1200); //Turn to goal
 
-    cascade_left.move_relative(1500, 600); // Lift up cascade slightly
-    cascade_right.move_relative(1500, 600);
-    turnPID(90, 1, 1000); // Turn towards goal again
+    pros::delay(200);
+
+    cascade_left.move_relative(2400, 600); // Lift up cascade slightly
+    cascade_right.move_relative(2400, 600);
+    pros::delay(500);
+
+    driveAndSlowPID(32, 450, 0.95, 1250); //Go for 4th pin
+
+    cascade_left.move_relative(-1450, 520);
+    cascade_right.move_relative(-1450, 520);
+
+    drivePID(8, 1, 450);
+
+    clamp_piston.set_value(false); // PLOP
+
+    pros::delay(300);
+
+    drivePID(-15, 0.8, 500);
 }

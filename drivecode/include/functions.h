@@ -256,7 +256,7 @@ void driveAndClampPID(double desired_inches, double distSlowDown, double clamp_e
 
         pros::delay(20);
     }
-    clamp_piston.set_value(true);
+    clamp_piston.set_value(false);
     left_mg.move_velocity(0);
     right_mg.move_velocity(0);
 
@@ -343,8 +343,8 @@ void driveAndSlowPID(double desired_inches, double distSlowDown, double velocit,
     return;
 }
 
-double tKP = 0.97, tKI = 0, tKD = 0.25; 
-double min_turn_power = 14; 
+double tKP = 1.1, tKI = 0, tKD = 0.35; 
+double min_turn_power = 16; 
 int turnPID(double desiredAngle, double velocit, int waitTime)
 {
     double derivative = 0; 
@@ -362,39 +362,42 @@ int turnPID(double desiredAngle, double velocit, int waitTime)
 
     double random = 90; 
 
-    while (fabs(error) > 0.1 && currWait <= waitTime)
+    while (fabs(error) > 0.25 && currWait < waitTime)
     {
         //pros::lcd::print(6, "currWait: %i", currWait);
-        currAngle = inertial.get_rotation(); 
+        currAngle = inertial.get_heading(); 
         error = desiredAngle - currAngle;
 
         //Readjusts error
         while (error > 180)
         {
-            error -= 360; 
+            error -= 360;
+            pros::delay(10);  
         }
 
         while (error < -180)
         {
             error += 360; 
+            pros::delay(10); 
         }
-        derivative = currAngle - prevAngle; 
+
+        derivative =  prevError - error; 
+
 
         power = ((tKP * error) + (tKI * integral) + (tKD * derivative)) * velocit; 
 
-        /*if (fabs(power) < min_turn_power)
+        if (fabs(power) < min_turn_power)
         {
             power > 0 ? power = min_turn_power : power = -min_turn_power; 
-        }*/
+        }
 
         left_mg.move(power); 
         right_mg.move(-power); 
-        
-        if (currWait > waitTime)
-        {
-            return random; 
-        }
+    
         prevAngle = currAngle;
+        prevError = error;
+
+        pros::lcd::set_text(4, "Error: " + std::to_string(error));
         currWait += 20;
         pros::delay(20); 
 
@@ -407,6 +410,49 @@ int turnPID(double desiredAngle, double velocit, int waitTime)
     right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE); 
 
     return random; 
+}
+
+double newtKP = 2.7, newtKI = 0, newtKD = 0.75;
+double newTurnMin = 38; 
+int newTurnPID(double heading, double velocit, int waitTime)
+{
+    int currWait = 0;
+    double error = heading - inertial.get_rotation();
+    pros::lcd::set_text(2, "Original Error " + std::to_string(error));
+    double derivative = 0;
+    double prevError = 0;
+
+    while (fabs(error) >= 0.1 && currWait <= waitTime)
+    {
+        // master.print(0, 0, "Theta: %f", Inertial.get_rotation());
+        error = heading - inertial.get_rotation();
+        double power = (error * newtKP) + (derivative * newtKD);
+
+        if (fabs(power) < newTurnMin)
+        {
+            power >= 0 ? power = newTurnMin : power = -newTurnMin; 
+        }
+        left_mg.move_velocity(power * velocit);
+        right_mg.move_velocity(-power * velocit);
+
+        derivative = prevError - error;
+        prevError = error;
+
+        // Keeps robot from self-destructing
+        currWait += 20;
+        pros::delay(20);
+        pros::lcd::set_text(1, "Current Error: " + std::to_string(error));
+        pros::lcd::set_text(4, "Current Power: " + std::to_string(power));
+    }
+
+    left_mg.move_velocity(0);
+    right_mg.move_velocity(0);
+
+    left_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    right_mg.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+    
+
+    return 0; 
 }
 
 void moveCascade(double desired_inches, double velocit, int waitTime)

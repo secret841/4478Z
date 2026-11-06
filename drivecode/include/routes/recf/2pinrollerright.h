@@ -13,8 +13,8 @@ void twopinrollerright()
     clamp_piston.set_value(true);
     pros::delay(100); 
 
-    cascade_left.move_relative(550, 600);
-    cascade_right.move_relative(550, 600);
+    cascade_left.move_relative(650, 600);
+    cascade_right.move_relative(650, 600);
 
     
     drivePID(-22, 1, 900); //Back up, clear two pins
@@ -23,8 +23,8 @@ void twopinrollerright()
     turnPID(90, 1, 1100); //Turn towards goal
     driveAndSlowPID(22.5, 250, 1, 1000); 
 
-    cascade_left.move_relative(-350, 600);
-    cascade_right.move_relative(-350, 600);
+    cascade_left.move_relative(-450, 600);
+    cascade_right.move_relative(-450, 600);
 
     drivePID(-2, 1, 300); 
     clamp_piston.set_value(false); //PLOP!
@@ -38,14 +38,14 @@ void twopinrollerright()
 
     drivePID(-15, 1, 1000); //Back out of matchloader
 
-    cascade_left.move_relative(700, 600);
-    cascade_right.move_relative(700, 600);
+    cascade_left.move_relative(850, 600);
+    cascade_right.move_relative(850, 600);
 
     turnPID(90, 1, 1000);
     driveAndSlowPID(31, 250, 1, 1000);
 
-    cascade_left.move_relative(-550, 600);
-    cascade_right.move_relative(-550, 600);
+    cascade_left.move_relative(-650, 600);
+    cascade_right.move_relative(-650, 600);
 
     drivePID(-2, 1, 300);
 
@@ -58,8 +58,10 @@ void twopinrollerright()
     drivePID(22, 1.5, 600); 
     turnPID(180, 1.5, 600);//Face the back to toggle
 
-    driveAmount(-18, 600, 500); //Smash toggle
-    driveAmount(6, 600, 400); 
-    driveAmount(-18, 500, 400);  
+    drivePID(10, 1, 400); 
+
+    driveAmount(-25, 600, 500); //Smash toggle
+    driveAmount(12, 600, 400); 
+    driveAmount(-45, 500, 1200);  
     driveAmount(10, 600, 400); 
 }

@@ -55,6 +55,7 @@ void on_center_button() {
  */
 void initialize() {
 	pros::lcd::initialize();
+
 	pros::lcd::set_text(1, "Hello, World!");
 	pros::lcd::register_btn1_cb(on_center_button);
 
@@ -63,14 +64,17 @@ void initialize() {
 	right_mg.tare_position(); 
 
 	cascade_left.tare_position();
-	cascade_right.tare_position(); 
+	cascade_right.tare_position();
+
+	//chassis.calibrate();
 
 	inertial.reset(); 
 	while (inertial.is_calibrating())
 	{
 		pros::delay(20);
 	}
-	inertial.set_rotation(0); 
+	inertial.set_rotation(0);
+	clamp_piston.set_value(true);
 }
 
 /**

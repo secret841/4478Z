@@ -74,7 +74,7 @@ void initialize() {
 		pros::delay(20);
 	}
 	inertial.set_rotation(0);
-	clamp_piston.set_value(true);
+	clamp_piston.set_value(true); 
 }
 
 /**
@@ -158,6 +158,7 @@ void autonomous() {
  */
 void opcontrol() {
 	bool piston_val = true;
+	
 	while (true) {
 
 	
@@ -166,7 +167,7 @@ void opcontrol() {
 		//Gets speed from left and right joysticks
 		int leftSpeed = master.get_analog(ANALOG_LEFT_Y);  
 		int rightSpeed = master.get_analog(ANALOG_RIGHT_Y);
-		double cascade_pos = (cascade_left.get_position() + cascade_right.get_position()) / 2; 
+		double cascade_pos = (cascade_left.get_position() + current_cascadePos); //Gets offset from autons
 
 		//pros::lcd::print(0, "%d", rightSpeed);
 		//pros::lcd::print(1, "%d", piston_val);
@@ -271,7 +272,7 @@ void opcontrol() {
 			cascade_left.move_velocity(600);
 			cascade_right.move_velocity(600);
 		}
-		else if (master.get_digital(DIGITAL_R2) && cascade_pos > -150)
+		else if (master.get_digital(DIGITAL_R2) && cascade_pos > -40)
 		{
 			cascade_left.move_velocity(-600);
 			cascade_right.move_velocity(-600);
@@ -299,7 +300,7 @@ void opcontrol() {
 				clamp_piston.set_value(true); 
 				cascade_left.move_velocity(600);
 				cascade_right.move_velocity(600);
-				pros::delay(130);
+				pros::delay(180);
 
 				cascade_left.move_velocity(0);
 				cascade_right.move_velocity(0);

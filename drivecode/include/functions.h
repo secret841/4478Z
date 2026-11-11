@@ -7,6 +7,8 @@
 const float wheel_radius = 3.25; 
 const float aryans_constant = 1.270;
 
+const double radiusBot = 12.225; 
+
 double degreesToInches(double degrees, double wheel_radius)
 {
     double inches = degrees * ((2 * M_PI) / (360)) * wheel_radius;
@@ -52,7 +54,7 @@ void driveAmount(double inches, double velocit, int waitTime)
 
 double kP = 0.155, kI = 0, kD = 0.1; 
 double min_power = 6; 
-double max_power = 115;
+double max_power = 110;
 
 void drivePID(double desired_inches, double velocita, int waitTime)
 {
@@ -81,7 +83,7 @@ void drivePID(double desired_inches, double velocita, int waitTime)
        error = desired_position - curr_pos; 
        derivative = curr_pos - prev_pos; 
 
-       power = ((error * kP) + (integral * kI) + (derivative * kD)) * velocita;  
+       power = ((error * kP) + (integral * kI) + (derivative * kD));  
        
        //Ensures that we at least move with the min_power; at least 2/127 or whatever it is.
 
@@ -97,8 +99,8 @@ void drivePID(double desired_inches, double velocita, int waitTime)
        {
             power > 0 ? power = min_power: power = -min_power; 
        }
-        left_mg.move(power);
-        right_mg.move(power);
+        left_mg.move(power * velocita);
+        right_mg.move(power * velocita);
 
         if (currTime > waitTime)
         {
@@ -256,7 +258,7 @@ void driveAndClampPID(double desired_inches, double distSlowDown, double clamp_e
 
         pros::delay(20);
     }
-    clamp_piston.set_value(false);
+    clamp_piston.set_value(true);
     left_mg.move_velocity(0);
     right_mg.move_velocity(0);
 
@@ -534,5 +536,39 @@ void cascadeDown(int waitTime)
 
     }
     return; 
+}
+
+//Bot radius set to 11.625
+void driveInArc(double arcRadius, double desiredDegrees, int waitTime)
+{
+    double radius1 = arcRadius - ((radiusBot) / 2); 
+    double radius2 = arcRadius + ((radiusBot) / 2); 
+
+    double ratio = radius1 / radius2; 
+
+    int currTime = 0; 
+    double currentVelocity = 200; 
+
+    double currAngle = inertial.get_rotation();
+    double goal = currAngle + desiredDegrees; 
+    double error = goal - currAngle; 
+    while (error > 0.5 && currTime < waitTime)
+    {
+        if (error > 0)
+        {
+            left_mg.move_velocity(currentVelocity);
+            right_mg.move_velocity(currentVelocity * ratio);
+        }
+        else
+        {
+            left_mg.move_velocity(currentVelocity * ratio);
+            right_mg.move_velocity(currentVelocity);
+        }
+
+       
+        //Makes sure we don't go too much
+        currTime += 20;
+        pros::delay(20); 
+    }
 }
     

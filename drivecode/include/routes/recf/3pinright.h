@@ -6,6 +6,7 @@
 
 #pragma once
 
+int current_cascadePos = 0;
 void threepinright()
 {
     //chassis.setPose(0, 0, 0); 
@@ -27,10 +28,10 @@ void threepinright()
     cascade_left.move_relative(-950, 600);
     cascade_right.move_relative(-950, 600);
 
-    drivePID(-2, 1, 200);
+    drivePID(3, 1, 400);
     clamp_piston.set_value(false); // PLOP!
 
-    drivePID(-27, 1, 1050); // Back out of goal
+    drivePID(-28, 1, 1050); // Back out of goal
     turnPID(0, 1, 1000);
 
     driveAndClampPID(18, 100, 20, 1, 950); // Clamp at match loader here
@@ -39,16 +40,17 @@ void threepinright()
 
     drivePID(-13.8, 1, 1000); // Back out of matchloader
 
-    cascade_left.move_relative(850, 600);
-    cascade_right.move_relative(850, 600);
+    cascade_left.move_relative(1050, 600);
+    cascade_right.move_relative(1050, 600);
 
     turnPID(90, 1, 1100);
     driveAndSlowPID(31, 350, 1, 1000);
 
-    cascade_left.move_relative(-650, 600);
-    cascade_right.move_relative(-650, 600);
+    cascade_left.move_relative(-750, 600);
+    cascade_right.move_relative(-750, 600);
 
-    drivePID(-2, 1, 300);
+    turnPID(90, 1, 250); 
+    drivePID(5, 1, 400);
 
     clamp_piston.set_value(false); // PLOP
 
@@ -56,7 +58,7 @@ void threepinright()
 
     cascade_left.move_relative(-300, 600); // Put cascade down
     cascade_right.move_relative(-300, 600);
-    turnPID(-0.5, 0.9, 1000);
+    turnPID(0, 1, 1000);
 
     driveAndClampPID(23.5, 100, 20, 1, 900); // Clamp at match loader here
 
@@ -76,11 +78,18 @@ void threepinright()
     cascade_left.move_relative(-950, 520);
     cascade_right.move_relative(-950, 520);
 
+    current_cascadePos = cascade_left.get_position(); //Tracks cascade position to get rid of error
+
     drivePID(8, 1, 250);
 
+    current_cascadePos = cascade_left.get_position();
     clamp_piston.set_value(false); // PLOP
 
     pros::delay(300);
 
+    cascade_left.move_relative(-1250, 600);
+    cascade_right.move_relative(-1250, 600);
+
+    current_cascadePos = cascade_left.get_position();
     drivePID(-8, 0.8, 500);
 }
